@@ -4,7 +4,8 @@ from . import views
 app_name = 'users'
 
 urlpatterns = [
-    path('login/', views.login_user, name='login'),
-    path('logout/', views.logout_user, name='logout'),
+    path(route='login/', view=views.login_user, name='login'),
+    path(route='logout/', view=views.logout_user, name='logout'),
+
 
 ]
