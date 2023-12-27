@@ -7,6 +7,14 @@
 </head>
 <body>
 
+<div>
+    {% if user.is_authenticated %}
+    {{ user.username }} | <a href="{% url 'users:logout' %}">Выйти</a>
+    {% else %}
+    <a href="{% url 'users:login' %}">Войти</a> | <a href="#">Регистрация</a>
+    {% endif %}
+</div>
+
 {% block content %}
 {% endblock %}
 

@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
@@ -14,9 +14,9 @@ def login_user(request):
                                 username=cleaned_data['username'],
                                 password=cleaned_data['password']
                                 )
-            if user and user.is_active():
+            if user and user.is_active:
                 login(request=request, user=user)
-                return HttpResponseRedirect(reverse('home'))
+                return HttpResponseRedirect(reverse(viewname='home'))
     else:
         form = forms.LoginUserForm()
 
@@ -24,4 +24,5 @@ def login_user(request):
 
 
 def logout_user(request):
-    return HttpResponse("logout")
+    logout(request)
+    return HttpResponseRedirect(reverse('users:login'))
