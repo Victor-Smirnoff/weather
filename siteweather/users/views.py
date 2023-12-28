@@ -1,28 +1,16 @@
-from django.contrib.auth import authenticate, login, logout
-from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
+from django.contrib.auth import logout
+from django.contrib.auth.views import LoginView
+from django.http import HttpResponseRedirect
 from django.urls import reverse
-from . import forms
+from .forms import LoginUserForm
 
 
-def login_user(request):
-    if request.method == 'POST':
-        form = forms.LoginUserForm(request.POST)
-        if form.is_valid():
-            cleaned_data = form.cleaned_data
-            user = authenticate(request=request,
-                                username=cleaned_data['username'],
-                                password=cleaned_data['password']
-                                )
-            if user and user.is_active:
-                login(request=request, user=user)
-                return HttpResponseRedirect(reverse(viewname='home'))
-    else:
-        form = forms.LoginUserForm()
-
-    return render(request, 'users/login.html', {'form': form})
+class LoginUser(LoginView):
+    from_class = LoginUserForm
+    template_name = 'users/login.html'
+    extra_context = {'title': 'Авторизация'}
 
 
 def logout_user(request):
     logout(request)
-    return HttpResponseRedirect(reverse('users:login'))
+    return HttpResponseRedirect(reverse(viewname='home'))
