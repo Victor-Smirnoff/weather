@@ -9,8 +9,3 @@ class LoginUser(LoginView):
     from_class = LoginUserForm
     template_name = 'users/login.html'
     extra_context = {'title': 'Авторизация'}
-
-
-def logout_user(request):
-    logout(request)
-    return HttpResponseRedirect(reverse(viewname='home'))

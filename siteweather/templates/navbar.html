@@ -1,9 +1,9 @@
 {% load static %}
 
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
-  <div class="container-fluid">
+  <div class="container justify-content-between">
     <a class="navbar-brand" href="/">
-      <img src="{% static 'weather/images/weather_logo.png' %}" alt="Logo" width="100" height="56" class="d-inline-block align-text-top">
+      <img src="{% static 'weather/images/weather_logo.png' %}" alt="Logo" width="150" height="50" class="d-inline-block align-text-top">
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Переключатель навигации">
       <span class="navbar-toggler-icon"></span>
@@ -11,7 +11,7 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="/">Главная</a>
+          <a class="nav-link" href="/">Главная</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="about/">О проекте</a>
@@ -42,11 +42,14 @@
         {% endif %}
       </ul>
       {% if user.is_authenticated %}
-      <a class="btn btn-outline-success" href="#">{{ user.username }}</a>
-      <a class="btn btn-outline-success" href="{% url 'users:logout' %}">Выйти</a>
+      <a class="btn btn-outline-success" href="#" style="margin-right: 10px;">{{ user.username }}</a>
+      <form class="d-flex" action="/submit" method="post">
+        {% csrf_token %}
+        <button class="btn btn-outline-success" type="submit" formaction="{% url 'users:logout' %}" style="margin-right: 10px;">Выйти</button>
+      </form>
       {% else %}
-      <a class="btn btn-outline-success" href="{% url 'users:login' %}">Войти</a>
-      <a class="btn btn-outline-success" href="#">Регистрация</a>
+      <a class="btn btn-outline-success" href="{% url 'users:login' %}" style="margin-right: 10px;">Войти</a>
+      <a class="btn btn-outline-success" href="#" style="margin-right: 10px;">Регистрация</a>
       {% endif %}
     </div>
   </div>

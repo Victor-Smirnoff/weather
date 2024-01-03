@@ -21,6 +21,10 @@
 
   </div>
 
-  <script src="{% static 'weather/css/bootstrap.min.js' %}"></script>
+  {% block footer %}
+  {% include "footer.html"%}
+  {% endblock %}
+
+  <script src="{% static 'weather/js/bootstrap.min.js' %}"></script>
   </body>
 </html>
