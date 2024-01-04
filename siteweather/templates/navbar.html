@@ -49,7 +49,7 @@
       </form>
       {% else %}
       <a class="btn btn-outline-success" href="{% url 'users:login' %}" style="margin-right: 10px;">Войти</a>
-      <a class="btn btn-outline-success" href="#" style="margin-right: 10px;">Регистрация</a>
+      <a class="btn btn-outline-success" href="{% url 'users:register' %}" style="margin-right: 10px;">Регистрация</a>
       {% endif %}
     </div>
   </div>

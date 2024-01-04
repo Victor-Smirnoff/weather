@@ -7,7 +7,6 @@
 
   <form method="post">
     {% csrf_token %}
-    <input type="hidden" name="next" value="{{ next }}" />
     <div class="text-danger">{{ form.non_field_errors }}</div>
     {% for f in form %}
     <p><label style="display: inline-block; min-width: 150px; vertical-align: top;" for="{{ f.id_for_label }}">{{ f.label }}</label>{{ f }}</p>
@@ -19,51 +18,5 @@
   </form>
 
 </main>
-
-
-
-<!--<main style="width: 500px; margin: 0 auto;">-->
-<!--  <h1 class="h3 mb-3 fw-normal" style="text-align: center;">Авторизация</h1>-->
-
-<!--  <form method="post">-->
-<!--    {% csrf_token %}-->
-<!--    <div class="text-danger">{{ form.non_field_errors }}</div>-->
-<!--    {% for f in form %}-->
-
-<!--    <div class="mb-3">-->
-<!--      <label for="{{ f.id_for_label }}" class="form-label">{{ f.label }}</label>{{ f }}-->
-<!--    </div>-->
-
-<!--    <div class="text-danger">{{ f.errors }}</div>-->
-<!--    {% endfor %}-->
-<!--    <div class="d-grid gap-2 col-6 mx-auto">-->
-<!--      <p><button type="submit" class="btn btn-outline-success w-100 py-2">Войти</button></p>-->
-<!--    </div>-->
-<!--  </form>-->
-
-<!--</main>-->
-
-
-<!--    <div class="row justify-content-center">-->
-<!--      <div class="col-md-6">-->
-<!--        <form method="post">-->
-<!--          {% csrf_token %}-->
-<!--          {% for field in form %}-->
-<!--            <div class="form-group">-->
-<!--              <label for="{{ field.id_for_label }}">{{ field.label }}</label>-->
-<!--              {{ field }}-->
-<!--              {% if field.errors %}-->
-<!--                <div class="text-danger">-->
-<!--                  {% for error in field.errors %}-->
-<!--                    {{ error }}-->
-<!--                  {% endfor %}-->
-<!--                </div>-->
-<!--              {% endif %}-->
-<!--            </div>-->
-<!--          {% endfor %}-->
-<!--          <button type="submit" class="btn btn-primary">Войти</button>-->
-<!--        </form>-->
-<!--      </div>-->
-<!--    </div>-->
 
 {% endblock %}

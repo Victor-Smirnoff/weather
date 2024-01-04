@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<br>
+<h1 class="h3 mb-3 fw-normal" style="text-align: center;">Добро пожаловать!</h1>
+<p>Регистрация успешно завершена!</p>
+<p>Для входа авторизуйтесь по <a href="{% url 'users:login' %}">ссылке</a></p>
+
+{% endblock %}
