@@ -48,7 +48,7 @@ class Weather_API_Service:
         Метод находит текущую погоду в городе по координатам (широта и долгота)
         :param lat: широта
         :param lon: долгота
-        :return: объект класса CurrentWeather
+        :return: объект класса CurrentWeatherResponse
         """
         url = f'https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&units=metric&appid={API_KEY}'
         response = requests.get(url)
@@ -97,3 +97,37 @@ class Weather_API_Service:
             message = f'Произошла ошибка при выполнении запроса: {code}'
             error_obj = ErrorResponse(code=code, message=message)
             return error_obj
+
+    def find_forecast_by_coords(self, lat, lon):
+        """
+        Метод находит прогноз погоды в городе по координатам (широта и долгота)
+        :param lat: широта
+        :param lon: долгота
+        :return: объект класса ForecastWeatherResponse
+        """
+        url = f'https://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&units=metric&appid={API_KEY}'
+        response = requests.get(url)
+        if response.status_code == 200:
+            json_response = response.json()
+            return json_response
+            # короче дописать этот метод нормально
+        else:
+            code = response.status_code
+            message = f'Произошла ошибка при выполнении запроса: {code}'
+            error_obj = ErrorResponse(code=code, message=message)
+            return error_obj
+
+
+
+api_obj = Weather_API_Service()
+forecast = api_obj.find_forecast_by_coords(lat='51.5073219', lon='-0.1276474')
+# for key, value in forecast.items():
+#     print(f"{key}: {value}")
+
+print(*forecast['list'], sep="\n")
+
+
+
+# чтобы получить иконку с сайта openweathermap надо воспользоваться этим запросом !
+icon = '01n'
+icon_url = f'https://openweathermap.org/img/wn/{icon}@2x.png'
