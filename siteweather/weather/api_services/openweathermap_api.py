@@ -1,7 +1,9 @@
 import requests
+from datetime import datetime
 from ENV import API_KEY
 from dto_response.city_response import CityResponse
 from dto_response.error_response import ErrorResponse
+from dto_response.current_weather_response import CurrentWeatherResponse
 
 
 
@@ -41,32 +43,57 @@ class Weather_API_Service:
             error_obj = ErrorResponse(code=code, message=message)
             return error_obj
 
+    def find_current_weather_by_coords(self, lat, lon):
+        """
+        Метод находит текущую погоду в городе по координатам (широта и долгота)
+        :param lat: широта
+        :param lon: долгота
+        :return: объект класса CurrentWeather
+        """
+        url = f'https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&units=metric&appid={API_KEY}'
+        response = requests.get(url)
+        if response.status_code == 200:
+            json_response = response.json()
+            name = json_response['name']
+            lat = json_response['coord']['lat']
+            lon = json_response['coord']['lon']
+            country = json_response['sys']['country']
+            weather_desc = json_response['weather'][0]['description']
+            icon = json_response['weather'][0]['icon']
+            temp = json_response['main']['temp']
+            feels_like = json_response['main']['feels_like']
+            temp_min = json_response['main']['temp_min']
+            temp_max = json_response['main']['temp_max']
+            pressure = json_response['main']['pressure']
+            humidity = json_response['main']['humidity']
+            sunrise = json_response['sys']['sunrise']
+            sunset = json_response['sys']['sunset']
+            timestamp = json_response['dt']
+            dt_object = datetime.fromtimestamp(timestamp)
+            current_date = dt_object.date()
+            current_time = dt_object.time()
 
+            current_weather_obj = CurrentWeatherResponse(name=name,
+                 lat=lat,
+                 lon=lon,
+                 country=country,
+                 weather_desc=weather_desc,
+                 icon=icon,
+                 temp=temp,
+                 feels_like=feels_like,
+                 temp_min=temp_min,
+                 temp_max=temp_max,
+                 pressure=pressure,
+                 humidity=humidity,
+                 sunrise=sunrise,
+                 sunset=sunset,
+                 current_date=current_date,
+                 current_time=current_time,
+                 )
 
-# city = input()
-city = 'London'
-limit = 2
-url = f'http://api.openweathermap.org/geo/1.0/direct?q={city}&limit={limit}&appid={API_KEY}'
-response = requests.get(url)
-
-if response.status_code == 200:
-    print('Запрос выполнен успешно')
-    json_response = response.json()
-    print('Ответ сервера в формате JSON:')
-    print(len(json_response))
-    for city in json_response:
-        print(city)
-
-        lat = city['lat']
-        lon = city['lon']
-        url_city_koords = f'https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&units=metric&appid={API_KEY}'
-        response_city = requests.get(url_city_koords)
-        if response_city.status_code == 200:
-            print('Запрос на погоду в городе выполнен успешно')
-            json_response_city = response_city.json()
-            print(json_response_city)
+            return current_weather_obj
         else:
-            print('Произошла ошибка при выполнении запроса:', response_city.status_code)
-
-else:
-    print('Произошла ошибка при выполнении запроса:', response.status_code)
+            code = response.status_code
+            message = f'Произошла ошибка при выполнении запроса: {code}'
+            error_obj = ErrorResponse(code=code, message=message)
+            return error_obj

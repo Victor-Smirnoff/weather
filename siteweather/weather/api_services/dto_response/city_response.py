@@ -9,7 +9,7 @@ class CityResponse:
     """
     def __init__(self, name, lat, lon, country, state=None):
         """
-        В иниц6иализатор попадают данные из JSON ответа от сервера API
+        В инициализатор попадают данные из JSON ответа от сервера API
         :param name: название города
         :param lat: широта
         :param lon: долгота
