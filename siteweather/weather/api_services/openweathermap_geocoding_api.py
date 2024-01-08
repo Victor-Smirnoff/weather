@@ -1,9 +1,10 @@
 import requests
+from ENV import API_KEY
 
 # city = input()
 city = 'London'
 
-url = f'http://api.openweathermap.org/geo/1.0/direct?q={city}&limit=5&appid=d577648ef101e4b28dee18ee28d85586'
+url = f'http://api.openweathermap.org/geo/1.0/direct?q={city}&limit=5&appid={API_KEY}'
 response = requests.get(url)
 
 if response.status_code == 200:
