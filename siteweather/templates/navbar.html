@@ -19,9 +19,10 @@
 
         {% if user.is_authenticated %}
         <li class="nav-item">
-          <form class="d-flex" role="search">
-          <input class="form-control me-2" type="search" placeholder="Поиск" aria-label="Поиск">
-          <button class="btn btn-outline-success" type="submit">Поиск</button>
+          <form class="d-flex" role="search" action="/search/" method="post" enctype="application/x-www-form-urlencoded">
+            {% csrf_token %}
+            <input class="form-control me-2" type="search" name="city_name" placeholder="Поиск" aria-label="Поиск">
+            <button class="btn btn-outline-success" type="submit">Поиск</button>
           </form>
         </li>
         {% else %}
