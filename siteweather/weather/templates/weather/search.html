@@ -4,8 +4,27 @@
 
 <h1>{{ title }}</h1>
 
-<h2>Поиск города - {{ city_name }}</h2>
+<h2>Поиск погоды в городе - {{ city_name }}</h2>
 
-<p>Продолжение следует...</p>
+
+<div class="d-flex align-content-start flex-wrap">
+
+{% for result in search_result %}
+
+  <div class="card" style="width: 18rem; margin-right: 20px; margin-bottom: 20px;">
+    <div class="card-header">
+      {{ result.name }}
+    </div>
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item">Широта: {{ result.lat }}</li>
+      <li class="list-group-item">Долгота: {{ result.lon }}</li>
+      <li class="list-group-item">Страна: {{ result.country }}, {{ result.country_name }}</li>
+      <li class="list-group-item"><button name="save" class="btn btn-outline-success w-100 py-2">Добавить</button></li>
+    </ul>
+  </div>
+
+{% endfor %}
+
+</div>
 
 {% endblock %}

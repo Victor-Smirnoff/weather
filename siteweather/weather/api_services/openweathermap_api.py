@@ -1,10 +1,10 @@
 import requests
 from datetime import datetime
-from ENV import API_KEY
-from dto_response.city_response import CityResponse
-from dto_response.error_response import ErrorResponse
-from dto_response.current_weather_response import CurrentWeatherResponse
-from dto_response.forecast_weather_response import ForecastWeatherResponse
+from weather.api_services.ENV import API_KEY
+from weather.api_services.dto_response.city_response import CityResponse
+from weather.api_services.dto_response.error_response import ErrorResponse
+from weather.api_services.dto_response.current_weather_response import CurrentWeatherResponse
+from weather.api_services.dto_response.forecast_weather_response import ForecastWeatherResponse
 
 
 
