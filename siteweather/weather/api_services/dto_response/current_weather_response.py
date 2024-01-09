@@ -8,10 +8,7 @@ class CurrentWeatherResponse:
     Класс для хранения данных по ответу с текущей погодой в городе
     """
     def __init__(self,
-                 name,
-                 lat,
-                 lon,
-                 country,
+                 city,
                  weather_desc,
                  icon,
                  temp,
@@ -27,10 +24,7 @@ class CurrentWeatherResponse:
                  ):
         """
         В инициализатор попадают данные из JSON ответа от сервера API
-        :param name: название города
-        :param lat: широта
-        :param lon: долгота
-        :param country: страна
+        :param city: объект класса CityResponse с данными о городе (название, широта, долгота, страна)
         :param weather_desc: описание погоды
         :param icon: текстовое представление иконки погоды
         :param temp: текущая температура
@@ -44,10 +38,7 @@ class CurrentWeatherResponse:
         :param current_date: текущая дата
         :param current_time: текущее время
         """
-        self.name = name
-        self.lat = lat
-        self.lon = lon
-        self.country = country
+        self.city = city
         self.weather_desc = weather_desc
         self.icon = icon
         self.temp = temp
@@ -60,3 +51,19 @@ class CurrentWeatherResponse:
         self.sunset = sunset
         self.current_date = current_date
         self.current_time = current_time
+
+    def __str__(self):
+        return f"""{self.__class__.__name__}(
+        city={self.city}, 
+        weather_desc={self.weather_desc}, 
+        temp={self.temp}, 
+        feels_like={self.feels_like}, 
+        temp_min={self.temp_min}, 
+        temp_max={self.temp_max}, 
+        pressure={self.pressure}, 
+        humidity={self.humidity}, 
+        sunrise={self.sunrise}, 
+        sunset={self.sunset}, 
+        current_date={self.current_date}, 
+        current_time={self.current_time}
+        )"""

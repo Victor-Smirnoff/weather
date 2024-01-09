@@ -4,6 +4,7 @@ from ENV import API_KEY
 from dto_response.city_response import CityResponse
 from dto_response.error_response import ErrorResponse
 from dto_response.current_weather_response import CurrentWeatherResponse
+from dto_response.forecast_weather_response import ForecastWeatherResponse
 
 
 
@@ -30,8 +31,7 @@ class Weather_API_Service:
                     lat = res['lat']
                     lon = res['lon']
                     country = res['country']
-                    state = res['state'] if 'state' in res else None
-                    city_obj = CityResponse(name=name, lat=lat, lon=lon, country=country, state=state)
+                    city_obj = CityResponse(name=name, lat=lat, lon=lon, country=country)
                     cities_list.append(city_obj)
                 return cities_list
             else:
@@ -54,10 +54,13 @@ class Weather_API_Service:
         response = requests.get(url)
         if response.status_code == 200:
             json_response = response.json()
+
             name = json_response['name']
             lat = json_response['coord']['lat']
             lon = json_response['coord']['lon']
             country = json_response['sys']['country']
+            city = CityResponse(name=name, lat=lat, lon=lon, country=country)
+
             weather_desc = json_response['weather'][0]['description']
             icon = json_response['weather'][0]['icon']
             temp = json_response['main']['temp']
@@ -73,10 +76,7 @@ class Weather_API_Service:
             current_date = dt_object.date()
             current_time = dt_object.time()
 
-            current_weather_obj = CurrentWeatherResponse(name=name,
-                 lat=lat,
-                 lon=lon,
-                 country=country,
+            current_weather_obj = CurrentWeatherResponse(city=city,
                  weather_desc=weather_desc,
                  icon=icon,
                  temp=temp,
@@ -109,8 +109,50 @@ class Weather_API_Service:
         response = requests.get(url)
         if response.status_code == 200:
             json_response = response.json()
-            return json_response
-            # короче дописать этот метод нормально
+
+            forecast_obj = ForecastWeatherResponse()
+
+            name = json_response['city']['name']
+            lat = json_response['city']['coord']['lat']
+            lon = json_response['city']['coord']['lon']
+            country = json_response['city']['country']
+            city = CityResponse(name=name, lat=lat, lon=lon, country=country)
+            sunrise = json_response['city']['sunrise']
+            sunset = json_response['city']['sunset']
+
+            for dt in json_response['list']:
+                dt_object = datetime.fromtimestamp(dt['dt'])
+                current_date = dt_object.date()
+                current_time = dt_object.time()
+
+                weather_desc = dt['weather'][0]['description']
+                icon = dt['weather'][0]['icon']
+                temp = dt['main']['temp']
+                feels_like = dt['main']['feels_like']
+                temp_min = dt['main']['temp_min']
+                temp_max = dt['main']['temp_max']
+                pressure = dt['main']['pressure']
+                humidity = dt['main']['humidity']
+
+                current_weather_obj = CurrentWeatherResponse(city=city,
+                                                             weather_desc=weather_desc,
+                                                             icon=icon,
+                                                             temp=temp,
+                                                             feels_like=feels_like,
+                                                             temp_min=temp_min,
+                                                             temp_max=temp_max,
+                                                             pressure=pressure,
+                                                             humidity=humidity,
+                                                             sunrise=sunrise,
+                                                             sunset=sunset,
+                                                             current_date=current_date,
+                                                             current_time=current_time,
+                                                             )
+
+                forecast_obj.forecast[dt['dt']] = current_weather_obj
+
+            return forecast_obj
+
         else:
             code = response.status_code
             message = f'Произошла ошибка при выполнении запроса: {code}'
@@ -120,11 +162,10 @@ class Weather_API_Service:
 
 
 api_obj = Weather_API_Service()
-forecast = api_obj.find_forecast_by_coords(lat='51.5073219', lon='-0.1276474')
-# for key, value in forecast.items():
-#     print(f"{key}: {value}")
+forecast_obj = api_obj.find_forecast_by_coords(lat='51.5073219', lon='-0.1276474')
+for key in forecast_obj.forecast:
+    print(forecast_obj.forecast[key])
 
-print(*forecast['list'], sep="\n")
 
 
 
