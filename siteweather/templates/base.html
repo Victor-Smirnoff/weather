@@ -8,18 +8,22 @@
     <link href="{% static 'weather/css/bootstrap.min.css' %}" rel="stylesheet">
     <title>Project weather</title>
   </head>
-  <body>
+  <body style="display: flex; flex-direction: column; min-height: 100vh; margin: 0;">
 
+  <header>
   {% block navbar %}
   {% include "navbar.html"%}
   {% endblock %}
+  </header>
 
+  <main class="flex-shrink-0" style="flex: 1;">
   <div class="container">
 
   {% block content %}
   {% endblock %}
 
   </div>
+  </main>
 
   {% block footer %}
   {% include "footer.html"%}
