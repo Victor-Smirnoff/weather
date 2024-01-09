@@ -159,16 +159,5 @@ class Weather_API_Service:
             error_obj = ErrorResponse(code=code, message=message)
             return error_obj
 
-
-
-api_obj = Weather_API_Service()
-forecast_obj = api_obj.find_forecast_by_coords(lat='51.5073219', lon='-0.1276474')
-for key in forecast_obj.forecast:
-    print(forecast_obj.forecast[key])
-
-
-
-
-# чтобы получить иконку с сайта openweathermap надо воспользоваться этим запросом !
-icon = '01n'
-icon_url = f'https://openweathermap.org/img/wn/{icon}@2x.png'
+    def get_icon_from_openweathermap(self, icon):
+        return f'https://openweathermap.org/img/wn/{icon}@2x.png'
