@@ -4,8 +4,8 @@ from django.db import models
 
 class Locations(models.Model):
     name = models.CharField(max_length=255, db_index=True)
-    latitude = models.DecimalField(max_digits=10, decimal_places=4)
-    longitude = models.DecimalField(max_digits=10, decimal_places=4)
+    latitude = models.DecimalField(max_digits=30, decimal_places=20)
+    longitude = models.DecimalField(max_digits=30, decimal_places=20)
     user_id = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='locations', null=False, default=None)
 
 
@@ -19,3 +19,4 @@ class Locations(models.Model):
         indexes = [
             models.Index(fields=['name'])
         ]
+        unique_together = [['name', 'latitude', 'longitude', 'user_id']]

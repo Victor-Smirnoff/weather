@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{{ title }}</h1>
+<h2>{{ error_message }}</h2>
+
+<div class="card" style="width: 18rem; margin-right: 20px; margin-bottom: 20px;">
+  <div class="card-header">
+    {{ name }}
+  </div>
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item">Широта: {{ latitude }}</li>
+    <li class="list-group-item">Долгота: {{ longitude }}</li>
+    <li class="list-group-item">Страна: {{ country }}, {{ country_name }}</li>
+  </ul>
+</div>
+
+{% endblock %}
