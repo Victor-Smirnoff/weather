@@ -1,6 +1,82 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
 <h1>{{ title }}</h1>
+
+<div class="d-flex align-content-start flex-wrap">
+
+{% for location_id, location_current_weather in locations.items %}
+
+  <div class="card" style="width: 18rem; margin-right: 20px; margin-bottom: 20px; min-width: 400px;">
+    <div class="card-header">
+      <b>{{ location_current_weather.city.name }},
+      {{ location_current_weather.city.country }}, {{ location_current_weather.city.country_name }}</b>
+      <img src="https://openweathermap.org/img/wn/{{ location_current_weather.icon }}@2x.png" alt="icon" width="100" height="100" style="position: absolute; top: 0; right: 0;" title="{{ location_current_weather.weather_desc }}">
+      <p style="margin-bottom: 0;">Погода сейчас: {{ location_current_weather.weather_desc }}</p>
+      <p style="margin-bottom: 0;">Температура: <span style="font-weight: bold;">{{ location_current_weather.temp }} &#8451;</span></p>
+      <p style="margin-bottom: 0;">Ощущается как: <span style="font-weight: bold;">{{ location_current_weather.feels_like }} &#8451;</span></p>
+      <p style="margin-bottom: 0;">{{ location_current_weather.current_date }}
+      {{ location_current_weather.current_time }}
+      </p>
+    </div>
+
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item">
+        <div class="row">
+          <div class="col-6">
+            <img src="{% static 'weather/images/cold.png' %}" alt="cold" width="20" height="20" class="d-inline-block align-text-top">
+            min {{ location_current_weather.temp_min }} &#8451;
+          </div>
+          <div class="col-6">
+            <img src="{% static 'weather/images/hot.png' %}" alt="hot" width="20" height="20" class="d-inline-block align-text-top">
+            max {{ location_current_weather.temp_max }} &#8451;
+          </div>
+        </div>
+      </li>
+      <li class="list-group-item">
+        <div class="row">
+          <div class="col-6">
+            <img src="{% static 'weather/images/pressure.png' %}" alt="pressure" width="20" height="20" class="d-inline-block align-text-top">
+            Давление {{ location_current_weather.pressure }} hPa
+          </div>
+          <div class="col-6">
+            <img src="{% static 'weather/images/humidity.png' %}" alt="humidity" width="20" height="20" class="d-inline-block align-text-top">
+            Влажность {{ location_current_weather.humidity }} %
+          </div>
+        </div>
+      </li>
+      <li class="list-group-item">
+        <div class="row">
+          <div class="col-6">
+            <img src="{% static 'weather/images/sunrise.png' %}" alt="sunrise" width="20" height="20" class="d-inline-block align-text-top">
+            Восход {{ location_current_weather.sunrise }}
+          </div>
+          <div class="col-6">
+            <img src="{% static 'weather/images/sunset.png' %}" alt="sunset" width="20" height="20" class="d-inline-block align-text-top">
+            Закат {{ location_current_weather.sunset }}
+          </div>
+        </div>
+      </li>
+
+      <li class="list-group-item">
+        <div class="row">
+          <div class="col-9">
+            <button name="forecast" class="btn btn-outline-success w-100 py-2">Посмотреть прогноз погоды</button>
+          </div>
+          <div class="col-3">
+            <form action="{% url 'home' %}" enctype="application/x-www-form-urlencoded" method="post">
+              {% csrf_token %}
+              <input type="hidden" name="location_id" value="{{ location_id }}">
+              <button name="delete" class="btn btn-outline-danger w-100 py-2"><img src="{% static 'weather/images/delete.png' %}" alt="Удалить" width="20" height="20"></button>
+            </form>
+          </div>
+      </li>
+    </ul>
+  </div>
+
+{% endfor %}
+
+</div>
 
 {% endblock %}

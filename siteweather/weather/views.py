@@ -12,6 +12,20 @@ def index(request):
     context = {}
     context['title'] = 'Главная страница'
 
+    user_id = user_id = request.user.id
+    locations = Locations.objects.filter(user_id=user_id).order_by('-id')
+
+    api_obj = Weather_API_Service()
+    locations_current_weather_dict = {}
+    for location in locations:
+        latitude = str(float(location.latitude))
+        longitude = str(float(location.longitude))
+        location_current_weather = api_obj.find_current_weather_by_coords(latitude, longitude)
+        location_current_weather.city.name = location.name
+        locations_current_weather_dict[location.id] = location_current_weather
+
+    context['locations'] = locations_current_weather_dict
+
     if request.method == 'POST':
         if 'save' in request.POST:
             name = request.POST.get('name')
@@ -21,9 +35,9 @@ def index(request):
             try:
                 location = Locations.objects.create(name=name, latitude=latitude, longitude=longitude, user_id=user_id)
                 location.save()
-                return render(request=request, template_name='weather/index.html', context=context)
+                return redirect('home')
             except Exception:
-                request.session['error_message'] = f'Произошла ошибка: город {name} уже добавлен ранее'
+                request.session['error_message'] = f'Произошла ошибка: город “{name}” уже добавлен ранее'
                 request.session['name'] = name
                 request.session['latitude'] = latitude
                 request.session['longitude'] = longitude
@@ -32,6 +46,15 @@ def index(request):
                 request.session['country_name'] = countries[country]
 
                 return redirect('save_error')
+
+        elif 'delete' in request.POST:
+            location_id = request.POST.get('location_id')
+            try:
+                location = Locations.objects.get(id=location_id)
+                location.delete()
+                return redirect('home')
+            except Exception:
+                return redirect('home')
 
     return render(request=request, template_name='weather/index.html', context=context)
 

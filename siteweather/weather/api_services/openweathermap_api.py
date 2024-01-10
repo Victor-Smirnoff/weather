@@ -50,7 +50,7 @@ class Weather_API_Service:
         :param longitude: долгота
         :return: объект класса CurrentWeatherResponse
         """
-        url = f'https://api.openweathermap.org/data/2.5/weather?lat={latitude}&longitude={longitude}&units=metric&appid={API_KEY}'
+        url = f'https://api.openweathermap.org/data/2.5/weather?lat={latitude}&lon={longitude}&units=metric&appid={API_KEY}'
         response = requests.get(url)
         if response.status_code == 200:
             json_response = response.json()
@@ -69,8 +69,8 @@ class Weather_API_Service:
             temp_max = json_response['main']['temp_max']
             pressure = json_response['main']['pressure']
             humidity = json_response['main']['humidity']
-            sunrise = json_response['sys']['sunrise']
-            sunset = json_response['sys']['sunset']
+            sunrise = datetime.fromtimestamp(json_response['sys']['sunrise']).time()
+            sunset = datetime.fromtimestamp(json_response['sys']['sunset']).time()
             timestamp = json_response['dt']
             dt_object = datetime.fromtimestamp(timestamp)
             current_date = dt_object.date()
@@ -105,7 +105,7 @@ class Weather_API_Service:
         :param longitude: долгота
         :return: объект класса ForecastWeatherResponse
         """
-        url = f'https://api.openweathermap.org/data/2.5/forecast?lat={latitude}&longitude={longitude}&units=metric&appid={API_KEY}'
+        url = f'https://api.openweathermap.org/data/2.5/forecast?lat={latitude}&lon={longitude}&units=metric&appid={API_KEY}'
         response = requests.get(url)
         if response.status_code == 200:
             json_response = response.json()
