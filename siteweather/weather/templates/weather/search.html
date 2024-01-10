@@ -12,15 +12,24 @@
 {% for result in search_result %}
 
   <div class="card" style="width: 18rem; margin-right: 20px; margin-bottom: 20px;">
+    <form method="post" action="{% url 'home' %}" enctype="application/x-www-form-urlencoded">
+    {% csrf_token %}
     <div class="card-header">
       {{ result.name }}
     </div>
     <ul class="list-group list-group-flush">
-      <li class="list-group-item">Широта: {{ result.lat }}</li>
-      <li class="list-group-item">Долгота: {{ result.lon }}</li>
+      <li class="list-group-item">Широта: {{ result.latitude }}</li>
+      <li class="list-group-item">Долгота: {{ result.longitude }}</li>
       <li class="list-group-item">Страна: {{ result.country }}, {{ result.country_name }}</li>
+
+      <input type="hidden" name="name" value="{{ result.name }}">
+      <input type="hidden" name="latitude" value="{{ result.latitude }}">
+      <input type="hidden" name="longitude" value="{{ result.longitude }}">
+      <input type="hidden" name="country" value="{{ result.country }}">
+
       <li class="list-group-item"><button name="save" class="btn btn-outline-success w-100 py-2">Добавить</button></li>
     </ul>
+    </form>
   </div>
 
 {% endfor %}

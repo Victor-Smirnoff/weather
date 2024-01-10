@@ -28,10 +28,10 @@ class Weather_API_Service:
                 cities_list = []
                 for res in json_response:
                     name = res['name']
-                    lat = res['lat']
-                    lon = res['lon']
+                    latitude = res['lat']
+                    longitude = res['lon']
                     country = res['country']
-                    city_obj = CityResponse(name=name, lat=lat, lon=lon, country=country)
+                    city_obj = CityResponse(name=name, latitude=latitude, longitude=longitude, country=country)
                     cities_list.append(city_obj)
                 return cities_list
             else:
@@ -43,23 +43,23 @@ class Weather_API_Service:
             error_obj = ErrorResponse(code=code, message=message)
             return error_obj
 
-    def find_current_weather_by_coords(self, lat, lon):
+    def find_current_weather_by_coords(self, latitude, longitude):
         """
         Метод находит текущую погоду в городе по координатам (широта и долгота)
-        :param lat: широта
-        :param lon: долгота
+        :param latitude: широта
+        :param longitude: долгота
         :return: объект класса CurrentWeatherResponse
         """
-        url = f'https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&units=metric&appid={API_KEY}'
+        url = f'https://api.openweathermap.org/data/2.5/weather?lat={latitude}&longitude={longitude}&units=metric&appid={API_KEY}'
         response = requests.get(url)
         if response.status_code == 200:
             json_response = response.json()
 
             name = json_response['name']
-            lat = json_response['coord']['lat']
-            lon = json_response['coord']['lon']
+            latitude = json_response['coord']['lat']
+            longitude = json_response['coord']['lon']
             country = json_response['sys']['country']
-            city = CityResponse(name=name, lat=lat, lon=lon, country=country)
+            city = CityResponse(name=name, latitude=latitude, longitude=longitude, country=country)
 
             weather_desc = json_response['weather'][0]['description']
             icon = json_response['weather'][0]['icon']
@@ -98,14 +98,14 @@ class Weather_API_Service:
             error_obj = ErrorResponse(code=code, message=message)
             return error_obj
 
-    def find_forecast_by_coords(self, lat, lon):
+    def find_forecast_by_coords(self, latitude, longitude):
         """
         Метод находит прогноз погоды в городе по координатам (широта и долгота)
-        :param lat: широта
-        :param lon: долгота
+        :param latitude: широта
+        :param longitude: долгота
         :return: объект класса ForecastWeatherResponse
         """
-        url = f'https://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&units=metric&appid={API_KEY}'
+        url = f'https://api.openweathermap.org/data/2.5/forecast?lat={latitude}&longitude={longitude}&units=metric&appid={API_KEY}'
         response = requests.get(url)
         if response.status_code == 200:
             json_response = response.json()
@@ -113,10 +113,10 @@ class Weather_API_Service:
             forecast_obj = ForecastWeatherResponse()
 
             name = json_response['city']['name']
-            lat = json_response['city']['coord']['lat']
-            lon = json_response['city']['coord']['lon']
+            latitude = json_response['city']['coord']['lat']
+            longitude = json_response['city']['coord']['lon']
             country = json_response['city']['country']
-            city = CityResponse(name=name, lat=lat, lon=lon, country=country)
+            city = CityResponse(name=name, latitude=latitude, longitude=longitude, country=country)
             sunrise = json_response['city']['sunrise']
             sunset = json_response['city']['sunset']
 
