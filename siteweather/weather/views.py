@@ -1,3 +1,5 @@
+import os
+
 from django.http import HttpResponse, HttpResponseNotFound
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
@@ -71,6 +73,12 @@ class WeatherHome(ListView):
         location_id = request.POST.get('location_id')
         try:
             location = Locations.objects.get(id=location_id)
+            cache_key = str(location.id)
+            if cache.has_key(cache_key):
+                try:
+                    cache.delete(cache_key)
+                except Exception as e:
+                    print(f"Ошибка очистки кеша: {e}")
             location.delete()
             return redirect('home')
         except Exception:
