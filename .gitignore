@@ -3,3 +3,4 @@ Materials for weather/
 djvenv/
 __pycache__/
 ENV.py
+weather_cache/

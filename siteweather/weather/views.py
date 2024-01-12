@@ -6,6 +6,7 @@ from weather.forms import LocationForm
 from weather.models import Locations
 from weather.api_services.ISO_country_codes import countries
 from django.views.generic import ListView
+from django.core.cache import cache
 
 
 
@@ -21,11 +22,16 @@ class WeatherHome(ListView):
         api_obj = Weather_API_Service()
         locations_current_weather_dict = {}
         for location in locations:
-            latitude = str(float(location.latitude))
-            longitude = str(float(location.longitude))
-            location_current_weather = api_obj.find_current_weather_by_coords(latitude, longitude)
-            location_current_weather.city.name = location.name
-            locations_current_weather_dict[location.id] = location_current_weather
+            location_current_weather = cache.get(str(location.id))
+            if location_current_weather:
+                locations_current_weather_dict[location.id] = location_current_weather
+            else:
+                latitude = str(float(location.latitude))
+                longitude = str(float(location.longitude))
+                location_current_weather = api_obj.find_current_weather_by_coords(latitude, longitude)
+                location_current_weather.city.name = location.name
+                cache.set(str(location.id), location_current_weather, 60*15)
+                locations_current_weather_dict[location.id] = location_current_weather
 
         return locations_current_weather_dict
 
