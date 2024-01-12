@@ -5,7 +5,7 @@ from weather.api_services.openweathermap_api import Weather_API_Service
 from weather.forms import LocationForm
 from weather.models import Locations
 from weather.api_services.ISO_country_codes import countries
-from django.views.generic import ListView
+from django.views.generic import ListView, TemplateView
 from django.core.cache import cache
 
 
@@ -64,7 +64,8 @@ class WeatherHome(ListView):
             country = request.POST.get('country')
             request.session['country'] = country
             request.session['country_name'] = countries[country]
-            return redirect('save_error')
+
+            return self.save_error(request)
 
     def post_delete_handler(self, request):
         location_id = request.POST.get('location_id')
@@ -74,6 +75,19 @@ class WeatherHome(ListView):
             return redirect('home')
         except Exception:
             return redirect('home')
+
+    def save_error(self, request):
+        context = {}
+        context['title'] = 'Ошибка добавления города'
+        context['error_message'] = request.session.get('error_message')
+        context['name'] = request.session.get('name')
+        context['latitude'] = request.session.get('latitude')
+        context['longitude'] = request.session.get('longitude')
+        context['country'] = request.session.get('country')
+        context['country_name'] = request.session.get('country_name')
+
+        return render(request=request, template_name='weather/save_error.html', context=context)
+
 
 
 # def index(request):
@@ -132,34 +146,47 @@ def about(request):
     return render(request=request, template_name='weather/about.html', context=context)
 
 
-def search(request):
-    context = {}
-    context['title'] = 'Результаты поиска'
+class WeatherSearch(ListView):
+    template_name = 'weather/search.html'
+    extra_context = {}
+    extra_context['title'] = 'Результаты поиска'
+    form_class = LocationForm
 
-    form_data = request.POST
-    city_name = form_data['city_name']
-    context['city_name'] = city_name
+    def post(self, request, *args, **kwargs):
+        form_data = self.request.POST
+        city_name = form_data['city_name']
+        self.extra_context['city_name'] = city_name
 
-    api_obj = Weather_API_Service()
-    search_result = api_obj.find_by_city(cityname=city_name)
-    context['search_result'] = search_result
+        api_obj = Weather_API_Service()
+        search_result = api_obj.find_by_city(cityname=city_name)
+        self.extra_context['search_result'] = search_result
 
-    form = LocationForm()
-    context['form'] = form
+        return render(request=request, template_name='weather/search.html', context=self.extra_context)
 
-    return render(request=request, template_name='weather/search.html', context=context)
 
-def save_error(request):
-    context = {}
-    context['title'] = 'Ошибка добавления города'
-    context['error_message'] = request.session.get('error_message')
-    context['name'] = request.session.get('name')
-    context['latitude'] = request.session.get('latitude')
-    context['longitude'] = request.session.get('longitude')
-    context['country'] = request.session.get('country')
-    context['country_name'] = request.session.get('country_name')
+# def search(request):
+#     context = {}
+#     context['title'] = 'Результаты поиска'
+#
+#     form_data = request.POST
+#     city_name = form_data['city_name']
+#     context['city_name'] = city_name
+#
+#     api_obj = Weather_API_Service()
+#     search_result = api_obj.find_by_city(cityname=city_name)
+#     context['search_result'] = search_result
+#
+#     form = LocationForm()
+#     context['form'] = form
+#
+#     return render(request=request, template_name='weather/search.html', context=context)
 
-    return render(request=request, template_name='weather/save_error.html', context=context)
 
-def page_not_found(request, exception):
-    return HttpResponseNotFound('<h1>Упс. Страница не найдена</h1>')
+
+class PageNotFound404(TemplateView):
+    extra_context = {}
+    extra_context['title'] = 'Страница не найдена'
+
+    def get(self, request, exception=None, *args, **kwargs):
+        self.extra_context['path'] = request.path
+        return render(request=request, template_name='404.html', status=404, context=self.extra_context)

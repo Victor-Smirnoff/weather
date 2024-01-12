@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
 from siteweather import settings
-from weather.views import page_not_found
+from weather.views import PageNotFound404
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,7 +27,7 @@ urlpatterns = [
 
 ]
 
-handler404 = page_not_found
+handler404 = PageNotFound404.as_view()
 
 admin.site.site_header = 'Панель администрирования проекта "Погода"'
 admin.site.index_title = 'Проект "Погода"'
