@@ -4,8 +4,9 @@
 
 <h1>{{ title }}</h1>
 
-<h2>Поиск погоды в городе - {{ city_name }}</h2>
+{% if city_name %}
 
+<h2>Поиск погоды в городе - {{ city_name }}</h2>
 
 <div class="d-flex align-content-start flex-wrap">
 
@@ -35,5 +36,11 @@
 {% endfor %}
 
 </div>
+
+{% else %}
+
+<h2>Введен пустой запрос в поле поиска, попробуйте заново</h2>
+
+{% endif %}
 
 {% endblock %}
