@@ -5,58 +5,120 @@ from weather.api_services.openweathermap_api import Weather_API_Service
 from weather.forms import LocationForm
 from weather.models import Locations
 from weather.api_services.ISO_country_codes import countries
+from django.views.generic import ListView
 
 
 
-def index(request):
-    context = {}
-    context['title'] = 'Главная страница'
+class WeatherHome(ListView):
+    template_name = 'weather/index.html'
+    context_object_name = 'locations'
+    extra_context = {}
+    extra_context['title'] = 'Главная страница'
+    form_class = LocationForm
 
-    user_id = user_id = request.user.id
-    locations = Locations.objects.filter(user_id=user_id).order_by('-id')
+    def get_queryset(self):
+        locations = Locations.objects.filter(user_id=self.request.user.id).order_by('-id')
+        api_obj = Weather_API_Service()
+        locations_current_weather_dict = {}
+        for location in locations:
+            latitude = str(float(location.latitude))
+            longitude = str(float(location.longitude))
+            location_current_weather = api_obj.find_current_weather_by_coords(latitude, longitude)
+            location_current_weather.city.name = location.name
+            locations_current_weather_dict[location.id] = location_current_weather
 
-    api_obj = Weather_API_Service()
-    locations_current_weather_dict = {}
-    for location in locations:
-        latitude = str(float(location.latitude))
-        longitude = str(float(location.longitude))
-        location_current_weather = api_obj.find_current_weather_by_coords(latitude, longitude)
-        location_current_weather.city.name = location.name
-        locations_current_weather_dict[location.id] = location_current_weather
+        return locations_current_weather_dict
 
-    context['locations'] = locations_current_weather_dict
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            if 'save' in request.POST:
+                return self.post_save_handler(request)
+            elif 'delete' in request.POST:
+                return self.post_delete_handler(request)
 
-    if request.method == 'POST':
-        if 'save' in request.POST:
-            name = request.POST.get('name')
-            latitude = float(request.POST.get('latitude').replace(',', '.'))
-            longitude = float(request.POST.get('longitude').replace(',', '.'))
-            user_id = request.user
-            try:
-                location = Locations.objects.create(name=name, latitude=latitude, longitude=longitude, user_id=user_id)
-                location.save()
-                return redirect('home')
-            except Exception:
-                request.session['error_message'] = f'Произошла ошибка: город “{name}” уже добавлен ранее'
-                request.session['name'] = name
-                request.session['latitude'] = latitude
-                request.session['longitude'] = longitude
-                country = request.POST.get('country')
-                request.session['country'] = country
-                request.session['country_name'] = countries[country]
+    def post_save_handler(self, request):
+        name = request.POST.get('name')
+        latitude = float(request.POST.get('latitude').replace(',', '.'))
+        longitude = float(request.POST.get('longitude').replace(',', '.'))
+        user_id = request.user
+        try:
+            location = Locations.objects.create(name=name,
+                                                latitude=latitude,
+                                                longitude=longitude,
+                                                user_id=user_id
+                                                )
+            location.save()
+            return redirect('home')
+        except Exception:
+            request.session['error_message'] = f'Произошла ошибка: город “{name}” уже добавлен ранее'
+            request.session['name'] = name
+            request.session['latitude'] = latitude
+            request.session['longitude'] = longitude
+            country = request.POST.get('country')
+            request.session['country'] = country
+            request.session['country_name'] = countries[country]
+            return redirect('save_error')
 
-                return redirect('save_error')
+    def post_delete_handler(self, request):
+        location_id = request.POST.get('location_id')
+        try:
+            location = Locations.objects.get(id=location_id)
+            location.delete()
+            return redirect('home')
+        except Exception:
+            return redirect('home')
 
-        elif 'delete' in request.POST:
-            location_id = request.POST.get('location_id')
-            try:
-                location = Locations.objects.get(id=location_id)
-                location.delete()
-                return redirect('home')
-            except Exception:
-                return redirect('home')
 
-    return render(request=request, template_name='weather/index.html', context=context)
+# def index(request):
+#     context = {}
+#     context['title'] = 'Главная страница'
+#
+#     user_id = user_id = request.user.id
+#     locations = Locations.objects.filter(user_id=user_id).order_by('-id')
+#
+#     api_obj = Weather_API_Service()
+#     locations_current_weather_dict = {}
+#     for location in locations:
+#         latitude = str(float(location.latitude))
+#         longitude = str(float(location.longitude))
+#         location_current_weather = api_obj.find_current_weather_by_coords(latitude, longitude)
+#         location_current_weather.city.name = location.name
+#         locations_current_weather_dict[location.id] = location_current_weather
+#
+#     context['locations'] = locations_current_weather_dict
+#
+#     if request.method == 'POST':
+#         if 'save' in request.POST:
+#             name = request.POST.get('name')
+#             latitude = float(request.POST.get('latitude').replace(',', '.'))
+#             longitude = float(request.POST.get('longitude').replace(',', '.'))
+#             user_id = request.user
+#             try:
+#                 location = Locations.objects.create(name=name, latitude=latitude, longitude=longitude, user_id=user_id)
+#                 location.save()
+#                 return redirect('home')
+#             except Exception:
+#                 request.session['error_message'] = f'Произошла ошибка: город “{name}” уже добавлен ранее'
+#                 request.session['name'] = name
+#                 request.session['latitude'] = latitude
+#                 request.session['longitude'] = longitude
+#                 country = request.POST.get('country')
+#                 request.session['country'] = country
+#                 request.session['country_name'] = countries[country]
+#
+#                 return redirect('save_error')
+#
+#         elif 'delete' in request.POST:
+#             location_id = request.POST.get('location_id')
+#             try:
+#                 location = Locations.objects.get(id=location_id)
+#                 location.delete()
+#                 return redirect('home')
+#             except Exception:
+#                 return redirect('home')
+#
+#     return render(request=request, template_name='weather/index.html', context=context)
 
 
 def about(request):

@@ -2,7 +2,9 @@
 {% load static %}
 
 {% block content %}
-<h1>{{ title }}</h1>
+<h1 class="h1 mb-3 fw-normal" style="text-align: center;">{{ title }}</h1>
+
+{% if user.is_authenticated %}
 
 <div class="d-flex align-content-start flex-wrap">
 
@@ -78,5 +80,11 @@
 {% endfor %}
 
 </div>
+
+{% else %}
+
+<h2 class="h3 mb-3 fw-normal" style="text-align: center;">Чтобы просматривать погоду надо<a href="{% url 'users:login' %}">авторизоваться</a></h2>
+
+{% endif %}
 
 {% endblock %}
