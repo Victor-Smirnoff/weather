@@ -89,8 +89,6 @@ class WeatherHome(ListView):
         return render(request=request, template_name='weather/save_error.html', context=context)
 
 
-
-
 class WeatherSearch(ListView):
     template_name = 'weather/search.html'
     extra_context = {}

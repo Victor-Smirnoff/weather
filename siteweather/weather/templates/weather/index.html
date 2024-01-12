@@ -70,7 +70,7 @@
             <form action="{% url 'home' %}" enctype="application/x-www-form-urlencoded" method="post">
               {% csrf_token %}
               <input type="hidden" name="location_id" value="{{ location_id }}">
-              <button name="delete" class="btn btn-outline-danger w-100 py-2"><img src="{% static 'weather/images/delete.png' %}" alt="Удалить" width="20" height="20"></button>
+              <button name="delete" class="btn btn-outline-danger w-100 py-2">del</button>
             </form>
           </div>
       </li>
