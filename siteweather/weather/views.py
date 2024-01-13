@@ -124,8 +124,21 @@ class AboutProject(TemplateView):
 class WeatherForecast(TemplateView):
     extra_context = {}
 
-    def get(self, request, *args, **kwargs):
-        pass
+    def get(self, request, location_id, *args, **kwargs):
+        location = Locations.objects.get(id=location_id)
+        self.extra_context['name'] = location.name
+        self.extra_context['title'] = f'Прогноз погоды “{location.name}”'
+
+        latitude = float(str(location.latitude).replace(',', '.'))
+        longitude = float(str(location.longitude).replace(',', '.'))
+
+        api_obj = Weather_API_Service()
+
+        forecast = api_obj.find_forecast_by_coords(latitude, longitude)
+
+        self.extra_context['forecast'] = forecast
+
+        return render(request=request, template_name='weather/forecast.html', context=self.extra_context)
 
 
 

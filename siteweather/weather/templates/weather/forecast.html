@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+{% if user.is_authenticated %}
+
+<h1 class="h1 mb-3 fw-normal" style="text-align: center;">{{ title }} на 5 дней</h1>
+
+<div class="d-flex align-content-start flex-wrap">
+
+{% for location_current_weather in forecast.forecast.values %}
+
+  <div class="card" style="width: 18rem; margin-right: 20px; margin-bottom: 20px; min-width: 400px;">
+    <div class="card-header">
+      <b>{{ location_current_weather.current_date }} {{ location_current_weather.current_time }}</b>
+      <img src="{% static 'weather/images/icon/'|add:location_current_weather.icon|add:'.png' %}" alt="icon" width="100" height="100" style="position: absolute; top: 0; right: 0;" title="{{ location_current_weather.weather_desc }}">
+      <p style="margin-bottom: 0;">Погода: {{ location_current_weather.weather_desc }}</p>
+      <p style="margin-bottom: 0;">Температура: <span style="font-weight: bold;">{{ location_current_weather.temp }} &#8451;</span></p>
+      <p style="margin-bottom: 0;">Ощущается как: <span style="font-weight: bold;">{{ location_current_weather.feels_like }} &#8451;</span></p>
+    </div>
+
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item">
+        <div class="row">
+          <div class="col-6">
+            <img src="{% static 'weather/images/cold.png' %}" alt="cold" width="20" height="20" class="d-inline-block align-text-top">
+            min {{ location_current_weather.temp_min }} &#8451;
+          </div>
+          <div class="col-6">
+            <img src="{% static 'weather/images/hot.png' %}" alt="hot" width="20" height="20" class="d-inline-block align-text-top">
+            max {{ location_current_weather.temp_max }} &#8451;
+          </div>
+        </div>
+      </li>
+      <li class="list-group-item">
+        <div class="row">
+          <div class="col-6">
+            <img src="{% static 'weather/images/pressure.png' %}" alt="pressure" width="20" height="20" class="d-inline-block align-text-top">
+            Давление {{ location_current_weather.pressure }} hPa
+          </div>
+          <div class="col-6">
+            <img src="{% static 'weather/images/humidity.png' %}" alt="humidity" width="20" height="20" class="d-inline-block align-text-top">
+            Влажность {{ location_current_weather.humidity }} %
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+{% endfor %}
+
+</div>
+
+{% else %}
+
+<h2 class="h3 mb-3 fw-normal" style="text-align: center;">Чтобы просматривать погоду надо <a href="{% url 'users:login' %}">авторизоваться</a></h2>
+
+{% endif %}
+
+{% endblock %}
