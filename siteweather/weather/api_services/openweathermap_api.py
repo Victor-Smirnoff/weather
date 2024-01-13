@@ -67,7 +67,8 @@ class Weather_API_Service:
             feels_like = json_response['main']['feels_like']
             temp_min = json_response['main']['temp_min']
             temp_max = json_response['main']['temp_max']
-            pressure = json_response['main']['pressure']
+            pressure = json_response['main']['pressure'] * 0.75006375541921
+            pressure = int(float(str(pressure).replace(',', '.')))
             humidity = json_response['main']['humidity']
             sunrise = datetime.fromtimestamp(json_response['sys']['sunrise']).time()
             sunset = datetime.fromtimestamp(json_response['sys']['sunset']).time()
@@ -131,7 +132,8 @@ class Weather_API_Service:
                 feels_like = dt['main']['feels_like']
                 temp_min = dt['main']['temp_min']
                 temp_max = dt['main']['temp_max']
-                pressure = dt['main']['pressure']
+                pressure = dt['main']['pressure'] * 0.75006375541921
+                pressure = int(float(str(pressure).replace(',', '.')))
                 humidity = dt['main']['humidity']
 
                 current_weather_obj = CurrentWeatherResponse(city=city,
