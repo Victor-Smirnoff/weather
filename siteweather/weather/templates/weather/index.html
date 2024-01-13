@@ -64,7 +64,9 @@
       <li class="list-group-item">
         <div class="row">
           <div class="col-9">
+            <form action="{% url 'forecast' location_id=location_id %}" method="get">
             <button name="forecast" class="btn btn-outline-success w-100 py-2">Посмотреть прогноз погоды</button>
+            </form>
           </div>
           <div class="col-3">
             <form action="{% url 'home' %}" enctype="application/x-www-form-urlencoded" method="post">
