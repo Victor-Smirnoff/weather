@@ -1,5 +1,3 @@
-import os
-
 from django.http import HttpResponse, HttpResponseNotFound
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
