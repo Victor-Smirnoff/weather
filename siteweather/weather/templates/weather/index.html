@@ -14,7 +14,7 @@
     <div class="card-header">
       <b>{{ location_current_weather.city.name }},
       {{ location_current_weather.city.country }}, {{ location_current_weather.city.country_name }}</b>
-      <img src="https://openweathermap.org/img/wn/{{ location_current_weather.icon }}@2x.png" alt="icon" width="100" height="100" style="position: absolute; top: 0; right: 0;" title="{{ location_current_weather.weather_desc }}">
+      <img src="{% static 'weather/images/icon/'|add:location_current_weather.icon|add:'.png' %}" alt="icon" width="100" height="100" style="position: absolute; top: 0; right: 0;" title="{{ location_current_weather.weather_desc }}">
       <p style="margin-bottom: 0;">Погода сейчас: {{ location_current_weather.weather_desc }}</p>
       <p style="margin-bottom: 0;">Температура: <span style="font-weight: bold;">{{ location_current_weather.temp }} &#8451;</span></p>
       <p style="margin-bottom: 0;">Ощущается как: <span style="font-weight: bold;">{{ location_current_weather.feels_like }} &#8451;</span></p>

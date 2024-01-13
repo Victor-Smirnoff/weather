@@ -117,8 +117,17 @@ class AboutProject(TemplateView):
     extra_context = {}
     extra_context['title'] = 'О проекте'
 
-    def get(self, request, exception=None, *args, **kwargs):
-        return render(request=request, template_name='weather/about.html', status=404, context=self.extra_context)
+    def get(self, request, *args, **kwargs):
+        return render(request=request, template_name='weather/about.html', context=self.extra_context)
+
+
+class WeatherForecast(TemplateView):
+    extra_context = {}
+
+    def get(self, request, *args, **kwargs):
+        pass
+
+
 
 
 class PageNotFound404(TemplateView):
