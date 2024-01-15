@@ -1,4 +1,4 @@
-from django.http import HttpResponse, HttpResponseNotFound
+from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from weather.api_services.openweathermap_api import Weather_API_Service
@@ -124,7 +124,7 @@ class AboutProject(TemplateView):
 class WeatherForecast(TemplateView):
     extra_context = {}
 
-    def get(self, request, location_id, *args, **kwargs):
+    def post(self, request, location_id, *args, **kwargs):
         location = Locations.objects.get(id=location_id)
         self.extra_context['name'] = location.name
         self.extra_context['title'] = f'Прогноз погоды “{location.name}”'
@@ -140,7 +140,26 @@ class WeatherForecast(TemplateView):
 
         return render(request=request, template_name='weather/forecast.html', context=self.extra_context)
 
+    def get(self, request, location_id, *args, **kwargs):
+        locations = Locations.objects.filter(user_id=self.request.user.id).order_by('-id')
+        lst_locations_id = [location.id for location in locations]
+        if location_id not in lst_locations_id:
+            raise Http404('Страница не найдена')
+        else:
+            location = Locations.objects.get(id=location_id)
+            self.extra_context['name'] = location.name
+            self.extra_context['title'] = f'Прогноз погоды “{location.name}”'
 
+            latitude = float(str(location.latitude).replace(',', '.'))
+            longitude = float(str(location.longitude).replace(',', '.'))
+
+            api_obj = Weather_API_Service()
+
+            forecast = api_obj.find_forecast_by_coords(latitude, longitude)
+
+            self.extra_context['forecast'] = forecast
+
+            return render(request=request, template_name='weather/forecast.html', context=self.extra_context)
 
 
 class PageNotFound404(TemplateView):

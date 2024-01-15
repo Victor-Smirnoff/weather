@@ -64,8 +64,10 @@
       <li class="list-group-item">
         <div class="row">
           <div class="col-9">
-            <form action="{% url 'forecast' location_id=location_id %}" method="get">
-            <button name="forecast" class="btn btn-outline-success w-100 py-2">Посмотреть прогноз погоды</button>
+            <form action="{% url 'forecast' location_id=location_id %}" enctype="application/x-www-form-urlencoded" method="post">
+              {% csrf_token %}
+              <input type="hidden" name="location_id" value="{{ location_id }}">
+              <button name="forecast" class="btn btn-outline-success w-100 py-2">Посмотреть прогноз погоды</button>
             </form>
           </div>
           <div class="col-3">
