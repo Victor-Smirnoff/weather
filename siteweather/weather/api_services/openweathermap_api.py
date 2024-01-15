@@ -131,10 +131,10 @@ class Weather_API_Service:
                 weather_desc = dt['weather'][0]['description']
                 weather_desc = desc_dict[weather_desc] if weather_desc in desc_dict else weather_desc
                 icon = dt['weather'][0]['icon']
-                temp = dt['main']['temp']
-                feels_like = dt['main']['feels_like']
-                temp_min = dt['main']['temp_min']
-                temp_max = dt['main']['temp_max']
+                temp = int(float(str(dt['main']['temp']).replace(',', '.')))
+                feels_like = int(float(str(dt['main']['feels_like']).replace(',', '.')))
+                temp_min = int(float(str(dt['main']['temp_min']).replace(',', '.')))
+                temp_max = int(float(str(dt['main']['temp_max']).replace(',', '.')))
                 pressure = dt['main']['pressure'] * 0.75006375541921
                 pressure = int(float(str(pressure).replace(',', '.')))
                 humidity = dt['main']['humidity']
