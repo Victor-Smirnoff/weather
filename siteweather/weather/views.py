@@ -22,7 +22,8 @@ class WeatherHome(ListView):
         api_obj = Weather_API_Service()
         locations_current_weather_dict = {}
         for location in locations:
-            location_current_weather = cache.get(str(location.id))
+            cache_key = 'locations_current_weather_' + str(location.id)
+            location_current_weather = cache.get(cache_key)
             if location_current_weather:
                 locations_current_weather_dict[location.id] = location_current_weather
             else:
@@ -30,7 +31,7 @@ class WeatherHome(ListView):
                 longitude = str(float(location.longitude))
                 location_current_weather = api_obj.find_current_weather_by_coords(latitude, longitude)
                 location_current_weather.city.name = location.name
-                cache.set(str(location.id), location_current_weather, 60*15)
+                cache.set(cache_key, location_current_weather, 60*15)
                 locations_current_weather_dict[location.id] = location_current_weather
 
         return locations_current_weather_dict
@@ -125,20 +126,7 @@ class WeatherForecast(TemplateView):
     extra_context = {}
 
     def post(self, request, location_id, *args, **kwargs):
-        location = Locations.objects.get(id=location_id)
-        self.extra_context['name'] = location.name
-        self.extra_context['title'] = f'Прогноз погоды “{location.name}”'
-
-        latitude = float(str(location.latitude).replace(',', '.'))
-        longitude = float(str(location.longitude).replace(',', '.'))
-
-        api_obj = Weather_API_Service()
-
-        forecast = api_obj.find_forecast_by_coords(latitude, longitude)
-
-        self.extra_context['forecast'] = forecast
-
-        return render(request=request, template_name='weather/forecast.html', context=self.extra_context)
+        return self.render_page(request, location_id)
 
     def get(self, request, location_id, *args, **kwargs):
         locations = Locations.objects.filter(user_id=self.request.user.id).order_by('-id')
@@ -146,19 +134,25 @@ class WeatherForecast(TemplateView):
         if location_id not in lst_locations_id:
             raise Http404('Страница не найдена')
         else:
-            location = Locations.objects.get(id=location_id)
-            self.extra_context['name'] = location.name
-            self.extra_context['title'] = f'Прогноз погоды “{location.name}”'
+            return self.render_page(request, location_id)
 
+    def render_page(self, request, location_id, *args, **kwargs):
+        location = Locations.objects.get(id=location_id)
+        self.extra_context['name'] = location.name
+        self.extra_context['title'] = f'Прогноз погоды “{location.name}”'
+
+        cache_key = 'locations_forecast_weather_' + str(location_id)
+        forecast = cache.get(cache_key)
+        if forecast:
+            self.extra_context['forecast'] = forecast
+            return render(request=request, template_name='weather/forecast.html', context=self.extra_context)
+        else:
             latitude = float(str(location.latitude).replace(',', '.'))
             longitude = float(str(location.longitude).replace(',', '.'))
-
             api_obj = Weather_API_Service()
-
             forecast = api_obj.find_forecast_by_coords(latitude, longitude)
-
             self.extra_context['forecast'] = forecast
-
+            cache.set(cache_key, forecast, 60 * 60)
             return render(request=request, template_name='weather/forecast.html', context=self.extra_context)
 
 
