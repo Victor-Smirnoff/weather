@@ -1,6 +1,7 @@
 import requests
 from datetime import datetime
 from weather.api_services.ENV import API_KEY
+from weather.api_services.weather_decsription import desc_dict
 from weather.api_services.dto_response.city_response import CityResponse
 from weather.api_services.dto_response.error_response import ErrorResponse
 from weather.api_services.dto_response.current_weather_response import CurrentWeatherResponse
@@ -62,6 +63,7 @@ class Weather_API_Service:
             city = CityResponse(name=name, latitude=latitude, longitude=longitude, country=country)
 
             weather_desc = json_response['weather'][0]['description']
+            weather_desc = desc_dict[weather_desc] if weather_desc in desc_dict else weather_desc
             icon = json_response['weather'][0]['icon']
             temp = json_response['main']['temp']
             feels_like = json_response['main']['feels_like']
@@ -127,6 +129,7 @@ class Weather_API_Service:
                 current_time = dt_object.time()
 
                 weather_desc = dt['weather'][0]['description']
+                weather_desc = desc_dict[weather_desc] if weather_desc in desc_dict else weather_desc
                 icon = dt['weather'][0]['icon']
                 temp = dt['main']['temp']
                 feels_like = dt['main']['feels_like']

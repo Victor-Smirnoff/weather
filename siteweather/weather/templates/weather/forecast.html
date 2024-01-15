@@ -14,7 +14,7 @@
   <div class="card" style="width: 18rem; margin-right: 20px; margin-bottom: 20px; min-width: 400px;">
     <div class="card-header">
       <b>{{ location_current_weather.current_date }} {{ location_current_weather.current_time }}</b>
-      <img src="{% static 'weather/images/icon/'|add:location_current_weather.icon|add:'.png' %}" alt="icon" width="100" height="100" style="position: absolute; top: 0; right: 0;" title="{{ location_current_weather.weather_desc }}">
+      <img src="{% static 'weather/images/custom_icon/'|add:location_current_weather.icon|add:'.png' %}" alt="icon" width="50" height="50" style="position: absolute; top: 0; right: 0;" title="{{ location_current_weather.weather_desc }}">
       <p style="margin-bottom: 0;">Погода: {{ location_current_weather.weather_desc }}</p>
       <p style="margin-bottom: 0;">Температура: <span style="font-weight: bold;">{{ location_current_weather.temp }} &#8451;</span></p>
       <p style="margin-bottom: 0;">Ощущается как: <span style="font-weight: bold;">{{ location_current_weather.feels_like }} &#8451;</span></p>
