@@ -1,8 +1,10 @@
-from django.db import Error
+from django.db import  IntegrityError
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.contrib.sessions.models import Session
+
+from users.forms import LoginUserForm, RegisterUserForm
 
 
 class NewUserRegistrationTest(TestCase):
@@ -44,6 +46,40 @@ class UserNonUniqueRegistrationTest(TestCase):
         # Создаем пользователя с заданным логином (именем)
         existing_user = User.objects.create_user(username='existing_user', password='testpassword')
 
-        # Используем assertRaises для проверки, что Error возникает при попытке создания пользователя с таким же именем
-        with self.assertRaises(Error):
+        # IntegrityError возникает при попытке создания пользователя с таким же именем
+        with self.assertRaises(IntegrityError):
             new_user = User.objects.create_user(username='existing_user', password='testpassword')
+
+
+class UserCreationFormTest(TestCase):
+    def test_valid_user_creation_form(self):
+        # Передаем корректные данные для успешной регистрации
+        form_data = {
+            'username': 'newuser',
+            'password1': 'testpassword',
+            'password2': 'testpassword',
+            'email': 'newuser@example.com',
+        }
+
+        form = RegisterUserForm(data=form_data)
+
+        # Проверяем, что форма валидна (должна быть валидной)
+        self.assertTrue(form.is_valid())
+
+    def test_invalid_user_creation_form(self):
+        # Передаем некорректные данные, что приведет к ошибкам валидации
+        form_data = {
+            'username': 'newuser',
+            'password1': 'testpassword',
+            'password2': 'differentpassword',  # Пароли не совпадают
+            'email': 'invalidemail',  # Некорректный формат email
+        }
+
+        form = RegisterUserForm(data=form_data)
+
+        # Проверяем, что форма не валидна (должна быть невалидной)
+        self.assertFalse(form.is_valid())
+
+        # Проверяем, что нужные ошибки валидации присутствуют
+        self.assertEqual(form.errors['password2'], ['Введенные пароли не совпадают.'])
+        self.assertEqual(form.errors['email'], ['Введите правильный адрес электронной почты.'])
