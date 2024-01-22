@@ -83,3 +83,36 @@ class UserCreationFormTest(TestCase):
         # Проверяем, что нужные ошибки валидации присутствуют
         self.assertEqual(form.errors['password2'], ['Введенные пароли не совпадают.'])
         self.assertEqual(form.errors['email'], ['Введите правильный адрес электронной почты.'])
+
+
+class LoginUserFormTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='testuser', password='testpassword')
+
+    def test_valid_login_user_form(self):
+        # Передаем корректные данные для успешного входа
+        form_data = {
+            'username': 'testuser',
+            'password': 'testpassword',
+        }
+
+        form = LoginUserForm(data=form_data)
+
+        # Проверяем, что форма валидна (должна быть валидной)
+        self.assertTrue(form.is_valid())
+
+    def test_invalid_login_user_form(self):
+        # Передаем некорректные данные, которые приведут к ошибке валидации
+        form_data = {
+            'username': 'testuser',
+            'password': 'wrongpassword',  # Неверный пароль
+        }
+
+        form = LoginUserForm(data=form_data)
+
+        # Проверяем, что форма не валидна (должна быть невалидной)
+        self.assertFalse(form.is_valid())
+
+        # Проверяем, что нужная ошибка валидации присутствует
+        error_message = 'Пожалуйста, введите правильные имя пользователя и пароль. Оба поля могут быть чувствительны к регистру.'
+        self.assertIn(error_message, form.errors['__all__'])
