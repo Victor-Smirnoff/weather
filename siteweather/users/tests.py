@@ -3,7 +3,7 @@ from django.test import TestCase, Client
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.contrib.sessions.models import Session
-
+from django.utils import timezone
 from users.forms import LoginUserForm, RegisterUserForm
 
 
@@ -116,3 +116,17 @@ class LoginUserFormTest(TestCase):
         # Проверяем, что нужная ошибка валидации присутствует
         error_message = 'Пожалуйста, введите правильные имя пользователя и пароль. Оба поля могут быть чувствительны к регистру.'
         self.assertIn(error_message, form.errors['__all__'])
+
+
+class SessionExpirationTest(TestCase):
+    def test_session_expiration(self):
+        # Устанавливаем меньшее время жизни сессии для целей тестирования
+        self.client.session['_session_expiry'] = int(timezone.now().timestamp()) - 1
+
+        # Попробуем выполнить запрос с авторизованным пользователем
+        response = self.client.get('/users/profile/')
+
+        # Проверяем, что теперь сессия истекла, и пользователь вышел из системы
+        self.assertEqual(response.status_code, 302)  # Должен быть редирект
+        self.assertFalse(self.client.session.get('_session_expiry'))  # Проверяем, что _session_expiry удален
+        self.assertFalse(self.client.session.get('_auth_user_id'))  # Пользователь разлогинен
