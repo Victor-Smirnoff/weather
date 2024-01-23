@@ -74,13 +74,19 @@ TEMPLATES = [
 WSGI_APPLICATION = 'siteweather.wsgi.application'
 
 
+from . import ENV
+
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': ENV.DB_NAME,
+        'USER': ENV.DB_USER,
+        'PASSWORD': ENV.DB_PASSWORD,
+        'HOST': ENV.DB_HOST,
+        'PORT': ENV.DB_PORT,
     }
 }
 
@@ -136,7 +142,7 @@ AUTHENTICATION_BACKENDS = ["django.contrib.auth.backends.ModelBackend",
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
-from . import ENV
+
 
 EMAIL_HOST = ENV.EMAIL_HOST
 EMAIL_PORT = ENV.EMAIL_PORT
