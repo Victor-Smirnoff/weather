@@ -36,7 +36,7 @@ class Weather_API_Service:
                     cities_list.append(city_obj)
                 return cities_list
             else:
-                error_obj = ErrorResponse(code=404, message=f'Город {cityname} не найден')
+                error_obj = ErrorResponse(code=404, message=f'Город “{cityname}” не найден')
                 return error_obj
         else:
             code = response.status_code

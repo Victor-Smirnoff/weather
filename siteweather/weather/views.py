@@ -109,7 +109,11 @@ class WeatherSearch(ListView):
 
         api_obj = Weather_API_Service()
         search_result = api_obj.find_by_city(cityname=city_name)
-        self.extra_context['search_result'] = search_result
+        if isinstance(search_result, list):
+            self.extra_context['search_result'] = search_result
+            self.extra_context['error_result'] = []
+        else:
+            self.extra_context['error_result'] = search_result
 
         return render(request=request, template_name='weather/search.html', context=self.extra_context)
 
