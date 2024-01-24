@@ -50,7 +50,7 @@ desc_dict = {
     'squalls': 'шквалы',
     'tornado': 'торнадо',
     'clear sky': 'ясное небо',
-    'few clouds': 'несколько облаков',
+    'few clouds': 'небольшая облачность',
     'scattered clouds': 'рассеянные облака',
     'broken clouds': 'разорванные облака',
     'overcast clouds': 'затянуто облаками',
