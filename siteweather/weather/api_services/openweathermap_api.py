@@ -40,9 +40,24 @@ class Weather_API_Service:
                 return error_obj
         else:
             code = response.status_code
+            return self.get_error_obj(code)
+
+    def get_error_obj(self, code):
+        error_dict = {
+            401: 'Произошла ошибка при выполнении запроса: 401 - проблема с API key',
+            404: 'Произошла ошибка при выполнении запроса: 404 - неправильное название или неверный формат запроса',
+            429: 'Произошла ошибка при выполнении запроса: 429 - превышение лимита запросов (60 запросов в минуту)',
+            500: 'Произошла ошибка при выполнении запроса: 500 - ошибка сервера API',
+            502: 'Произошла ошибка при выполнении запроса: 502 - ошибка сервера API',
+            503: 'Произошла ошибка при выполнении запроса: 503 - ошибка сервера API',
+            504: 'Произошла ошибка при выполнении запроса: 504 - ошибка сервера API',
+        }
+        if code in error_dict:
+            message = error_dict[code]
+        else:
             message = f'Произошла ошибка при выполнении запроса: {code}'
-            error_obj = ErrorResponse(code=code, message=message)
-            return error_obj
+        error_obj = ErrorResponse(code=code, message=message)
+        return error_obj
 
     def find_current_weather_by_coords(self, latitude, longitude):
         """
@@ -97,9 +112,7 @@ class Weather_API_Service:
             return current_weather_obj
         else:
             code = response.status_code
-            message = f'Произошла ошибка при выполнении запроса: {code}'
-            error_obj = ErrorResponse(code=code, message=message)
-            return error_obj
+            return self.get_error_obj(code)
 
     def find_forecast_by_coords(self, latitude, longitude):
         """
@@ -160,9 +173,4 @@ class Weather_API_Service:
 
         else:
             code = response.status_code
-            message = f'Произошла ошибка при выполнении запроса: {code}'
-            error_obj = ErrorResponse(code=code, message=message)
-            return error_obj
-
-    def get_icon_from_openweathermap(self, icon):
-        return f'https://openweathermap.org/img/wn/{icon}@2x.png'
+            return self.get_error_obj(code)
