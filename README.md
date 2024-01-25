@@ -6,7 +6,7 @@
 
 ## Для успешного запуска приложения:
 
-Приложение доступно по адресу: пока нет адреса, сайт находится в разработке
+Приложение доступно по адресу: http://37.18.152.4/
 
 ## License
 Project Weather is licensed under the MIT license. (http://opensource.org/licenses/MIT)
