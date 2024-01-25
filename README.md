@@ -9,4 +9,4 @@
 Приложение доступно по адресу: пока нет адреса, сайт находится в разработке
 
 ## License
-TennisScoreboard is licensed under the MIT license. (http://opensource.org/licenses/MIT)
+Project Weather is licensed under the MIT license. (http://opensource.org/licenses/MIT)
