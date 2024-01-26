@@ -78,7 +78,8 @@ class WeatherHome(ListView):
                     cache.delete(cache_key)
                 except Exception as e:
                     print(f"Ошибка очистки кеша: {e}")
-            location.delete()
+            if request.user.id == location.user_id.id:
+                location.delete()
             return redirect('home')
         except Exception:
             return redirect('home')
