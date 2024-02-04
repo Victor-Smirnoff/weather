@@ -6,7 +6,7 @@
 
 ## Для успешного запуска приложения:
 
-Приложение доступно по адресу: http://37.18.152.4/
+Приложение доступно по адресу: [Погода](https://any.smirnoff.pw/)
 
 ## License
 Project Weather is licensed under the MIT license. (http://opensource.org/licenses/MIT)
