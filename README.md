@@ -4,10 +4,6 @@
 
 [Техническое задание проекта](https://zhukovsd.github.io/python-backend-learning-course/Projects/WeatherViewer/)
 
-## Для успешного запуска приложения:
-
-Приложение доступно по адресу: [Погода](https://any.smirnoff.pw/)
-
 ## Функционал приложения
 
 Работа с пользователями:
@@ -23,6 +19,20 @@
 - Просмотр списка локаций, для каждой локации отображается название и температура
 - Удаление из списка
 - Просмотр прогноза погоды
+
+## Для успешного запуска приложения:
+
+Клонировать репозиторий.
+
+Создать локальное окружение. Установить все зависимости из файла requirements.txt
+
+Установить необходиые для запуска настройки в файле settings.py
+
+Установить СУБД PostgreSQL. Создать пользователя и БД в PostgreSQL. Задать параметры для доступа к БД: DB_NAME, DB_USER, DB_PASSWORD, DB_HOST, DB_PORT. Прописать эти параметры в файле ENV.py в директории siteweather.
+
+Для использования функции восстановления пароля по e-mail необходимо также задать параметры: EMAIL_HOST, EMAIL_PORT, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD, EMAIL_USE_SSL.
+
+Запустить приложение командой python manage.py runserver
 
 ## License
 Project Weather is licensed under the MIT license. (http://opensource.org/licenses/MIT)
